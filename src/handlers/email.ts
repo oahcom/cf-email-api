@@ -46,6 +46,17 @@ export async function handleEmail(
     return;
   }
 
+  // Forward email to configured address (e.g. QQ mailbox)
+  const forwardTo = env.FORWARD_TO || '';
+  if (forwardTo) {
+    try {
+      await message.forward(message.to, { to: forwardTo });
+      console.log(`[email] forwarded: ${message.to} -> ${forwardTo}`);
+    } catch (err) {
+      console.error(`[email] forward failed to ${forwardTo}:`, err);
+    }
+  }
+
   try {
     const parsed = await parseEmail(message);
 
